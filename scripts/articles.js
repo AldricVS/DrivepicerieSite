@@ -1,5 +1,5 @@
 /**
- * Gestion de la liste des articles (tri etc.)
+ * Gestion de la liste des articles sur la page (tri etc.)
  */
 
  /**

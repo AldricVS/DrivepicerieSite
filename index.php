@@ -38,8 +38,8 @@
             <ul class="cart-relative">
                 
                 <li class="cart-relative">
-                    <p class="cart-relative">Prix total : 0.00€</p></br>
-                    <button type="button" class="cart-relative">Effectuer la commande</button>
+                    <p class="cart-relative">Prix total : <span id="panier-prix-total">0.00</span>€</p></br>
+                    <button type="button" class="cart-relative" onclick="envoyerPanier();">Effectuer la commande</button>
                 </li>
             </ul>
               
@@ -85,6 +85,7 @@
 
 
         <!--Librairies Javascript-->
+        <script src="scripts/jquery-3.5.1.min.js"></script>
         <script src="scripts/cart.js"></script>
         <script src="scripts/articles.js"></script>
     </body>

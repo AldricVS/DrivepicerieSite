@@ -46,7 +46,8 @@ for (var i = 0; i < articleQuantiteInputs.length; i++) {
 
 
             /*Si l'article est dans le panier, on met juste à jour ses informations, sinon on l'ajoute*/
-            var panierElts = document.getElementById("panier-liste").children[0].children;
+            var panierUl = document.getElementById("panier-liste").children[0];
+            var panierElts = panierUl.children;
 
             var articleTrouve = false;
             for (var i = 0; i< panierElts.length; i++) {
@@ -58,24 +59,26 @@ for (var i = 0; i < articleQuantiteInputs.length; i++) {
                      * si la quantité devient 0, on supprime cet article   
                      */
                     if(valeurQuantite === 0){
-                        panierElts.removeChild(elt);
+                        panierUl.removeChild(elt);
                     }else{
                         var quantiteSpan = elt.getElementsByClassName("panier-item-quantite")[0];
                         //on modifie le prix total
                         var prixSpan = elt.getElementsByClassName("panier-item-prix")[0];
-                        console.log(prixSpan.innerHTML);
                         var prix = parseFloat(prixSpan.innerHTML);
                         quantiteSpan.innerHTML = valeurQuantite;
                         
                         var prixTotalSpan = elt.getElementsByClassName("panier-item-total")[0];
-                        console.log(prix);
                         prixTotalSpan.innerHTML = (prix * valeurQuantite).toFixed(2);
                     }
+                    miseAJourPrixTotal();
+                    //plus besoin de chercher
+                    break;
                 }
             }
 
             if(!articleTrouve){
                 ajouteArticleDansPanier(articleId, articleNom, articlePrix, valeurQuantite);
+                miseAJourPrixTotal();
             }
             
         }
@@ -83,12 +86,53 @@ for (var i = 0; i < articleQuantiteInputs.length; i++) {
 }
 
 function ajouteArticleDansPanier(id, nom, prix, quantite){
-    var panier = document.getElementById("panier-liste").children[0];
+    if(quantite > 0){
+        var panier = document.getElementById("panier-liste").children[0];
 
-    var li = document.createElement("li");
-    li.id = "panier-item-" + id;
-    li.classList.add("cart-relative");
-    li.innerHTML = nom + " - quantité : <span class=\"panier-item-quantite\">" + quantite +
-                         "</span> - prix : <span class=\"panier-item-prix\">" + prix + "</span>€ - prix total : <span class=\"panier-item-total\">" + (parseFloat(prix) * parseFloat(quantite)).toFixed(2)  + "</span> €";
-    panier.appendChild(li);
+        var li = document.createElement("li");
+        li.id = "panier-item-" + id;
+        li.classList.add("cart-relative");
+        li.innerHTML = "<span class=\"panier-item-nom\">" + nom +
+                         "</span> - quantité : <span class=\"panier-item-quantite\">" + quantite +
+                             "</span> - prix : <span class=\"panier-item-prix\">" + prix + "</span>€ - prix total : <span class=\"panier-item-total\">" + (parseFloat(prix) * parseFloat(quantite)).toFixed(2)  + "</span> €";
+        panier.appendChild(li);
+    }
+}
+
+function miseAJourPrixTotal(){
+    var panierPrixTotalSpan = document.getElementById("panier-prix-total");
+    var panierListe = document.getElementById("panier-liste").children[0].children;
+
+    var prixTotal = 0.0;
+    for(var i = 1; i < panierListe.length; i++){
+        var prixTotalItemSpan = panierListe[i].getElementsByClassName("panier-item-total")[0];
+        var prixTotalItem = prixTotalItemSpan.innerHTML;
+        prixTotal = (parseFloat(prixTotal) + parseFloat(prixTotalItem)).toFixed(2);
+    }
+
+    panierPrixTotalSpan.innerHTML = prixTotal;
+}
+
+function envoyerPanier(){
+    var panier = [];
+
+    var panierListe = document.getElementById("panier-liste").children[0].children;
+    //le premier element ne compte pas, il s'agit du récapitulatif 
+    for(var i = 1; i < panierListe.length; i++){
+        panier[i - 1] = [];
+        var article = panierListe[i];
+        //l'id du li est "panier-liste-[vrai id de l'article]"
+        var idArticle = article.id.split('-')[2];
+        var nomArticle = article.getElementsByClassName("panier-item-nom")[0].innerHTML;
+        var quantiteArticle = parseInt(article.getElementsByClassName("panier-item-quantite")[0].innerHTML);
+    
+        //on met le tout dans une ligne du tableeau
+        panier[i - 1].idArticle = idArticle;
+        panier[i - 1].nomArticle = nomArticle;
+        panier[i - 1].quantiteArticle = quantiteArticle;
+    }
+
+    $.post("commande.php", {panier: panier}, function(data){
+        document.getElementById("article-0").innerHTML = data;
+    })
 }
