@@ -2,9 +2,14 @@
     --main-color: #1251B9;
     --contrast-color: #EEEEEE;
     --secondary-color: #3c71c2;
+    --fade-color: #00000070;
 
     --radius-size: 10px;
     --header-height: 100px;
+}
+
+.hidden{
+    display: none;
 }
 
 body{
@@ -73,8 +78,7 @@ main{
 
 /*Liste articles*/
 
-main{
-    width: 100%;
+body{
     background-color: var(--contrast-color);
 }
 
@@ -154,4 +158,106 @@ div.article-carte :checked + label::before{
 
 #panier-liste > ul > li:nth-child(2n){
     background-color: var(--secondary-color);
+}
+
+/*connexion / inscription*/
+
+div.login{
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 50px;
+}
+
+form.login{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+form.login > *{
+    margin-bottom: 15px;
+}
+
+form.login > h3{
+    font-size: 25px;
+    font-weight: bold;
+}
+
+form.login{
+    font-size: 20px;
+}
+
+.ligne-vertical{
+    border-right: 2px solid black; 
+}
+
+/*pop-up informations*/
+.pop-up{
+    position: fixed;
+}
+
+.pop-up.pop-up-background{
+    z-index: 10;
+    background-color: var(--fade-color);
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+}
+
+.pop-up.pop-up-foreground{
+    z-index: 11;
+    background-color: var(--main-color);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 40px 30px 20px 30px;
+    font-size: 24px;
+    color: var(--contrast-color);
+    border-radius: var(--radius-size);
+}
+
+.pop-up-foreground .fermer-popup{
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.pop-up-foreground .fermer-popup:hover{
+    cursor: pointer;
+}
+
+.pop-up-foreground .fermer-popup:hover > line{
+    stroke: black;
+    stroke-width: 15px;
+}
+
+.pop-up-foreground .loading{
+    width: 50px;
+    height: 50px;
+    border: 5px solid gray;
+    border-top-color: white;
+    
+    border-radius: 100%;
+    animation: rotation 0.6s infinite cubic-bezier(0.5, 1, 0.5, 0.6);
+}
+
+@keyframes rotation{
+    from{transform: rotate(0);}
+    to{transform: rotate(360deg);}
+}
+
+@-moz-keyframes rotation{
+    from{transform: rotate(0);}
+    to{transform: rotate(360deg);}
+}
+
+@-webkit-keyframes rotation{
+    from{transform: rotate(0);}
+    to{transform: rotate(360deg);}
 }

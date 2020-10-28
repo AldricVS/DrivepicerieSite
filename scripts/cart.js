@@ -70,7 +70,7 @@ for (var i = 0; i < articleQuantiteInputs.length; i++) {
                         var prixTotalSpan = elt.getElementsByClassName("panier-item-total")[0];
                         prixTotalSpan.innerHTML = (prix * valeurQuantite).toFixed(2);
                     }
-                    miseAJourPrixTotal();
+                    miseAJourPanier();
                     //plus besoin de chercher
                     break;
                 }
@@ -78,7 +78,7 @@ for (var i = 0; i < articleQuantiteInputs.length; i++) {
 
             if(!articleTrouve){
                 ajouteArticleDansPanier(articleId, articleNom, articlePrix, valeurQuantite);
-                miseAJourPrixTotal();
+                miseAJourPanier();
             }
             
         }
@@ -99,7 +99,10 @@ function ajouteArticleDansPanier(id, nom, prix, quantite){
     }
 }
 
-function miseAJourPrixTotal(){
+/**
+ * Met à jour le prix total et affiche (ou non) le bouton pour effectuer la commande
+ */
+function miseAJourPanier(){
     var panierPrixTotalSpan = document.getElementById("panier-prix-total");
     var panierListe = document.getElementById("panier-liste").children[0].children;
 
@@ -113,6 +116,31 @@ function miseAJourPrixTotal(){
     panierPrixTotalSpan.innerHTML = prixTotal;
 }
 
+/**
+ * Vide tous les champs "quantité" des produits et vide le panier
+ */
+function viderQuantite(){
+    //on enlève tous les produits du panier
+    var panierListe = document.getElementById("panier-liste").children[0];
+    while(panierListe.children.length > 1){
+        console.log(panierListe.lastChild);
+        panierListe.removeChild(panierListe.lastChild);
+    }
+    //on remet le prix total à 0 et on cache cet element
+    document.getElementById("panier-prix-total").innerHTML = "0";
+    panierListe.children[0].classList.add("hidden");
+
+    //on met à 0 toutes les quantités des cartes article
+    var produitsListe = document.getElementsByClassName("liste-articles")[0].children;
+    for (let i = 0; i < produitsListe.length; i++) {
+        produitsListe[i].getElementsByClassName("article-quantite")[0].value = 0;
+    }
+
+}
+
+/**
+ * Récupère les infos du panier et fait un requête ajax pour pouvoir communiquer avec la base de données.
+ */
 function envoyerPanier(){
     var panier = [];
 
@@ -132,7 +160,17 @@ function envoyerPanier(){
         panier[i - 1].quantiteArticle = quantiteArticle;
     }
 
+    //on s'occupe d'afficher le chargement 
+    apparitionPopUp();
     $.post("commande.php", {panier: panier}, function(data){
-        document.getElementById("article-0").innerHTML = data;
-    })
+        apparitionTextePopUp(data);
+        
+        //si la commande à été bien effectuée, on vide tous les champs au passage
+        if(data == "Commande réalisée avec succès"){
+            console.log("vider champs");
+            viderQuantite();
+        }
+    });
+
+    
 }
