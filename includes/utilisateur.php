@@ -30,6 +30,8 @@ require_once("includes/bdd.php");
             }else{
                 return $erreurs;
             }
+            unset($_POST["conn-login"]);
+            unset($_POST["conn-password"]);
         }
     }
 
@@ -64,6 +66,12 @@ require_once("includes/bdd.php");
             }else{
                 $erreurs .= "Le mot de passe et celui de confirmation ne sont pas les mêmes\n";
             }
+
+            unset($_POST["ins-login"]);
+            unset($_POST["ins-email"]);
+            unset($_POST["ins-password"]);
+            unset($_POST["ins-password-confirm"]);
+
             if(empty($erreurs)){
                 header("Location: index.php");
             }else{

@@ -149,22 +149,26 @@ function viderQuantite() {
  * Récupère les infos du panier et fait un requête ajax pour pouvoir communiquer avec la base de données.
  */
 function envoyerPanier() {
-    var panier = [];
+    var panierAchat = [];
 
     var panierListe = document.getElementById("panier-liste").children[0].children;
     //le premier element ne compte pas, il s'agit du récapitulatif 
-    for (var i = 1; i < panierListe.length; i++) {
-        panier[i - 1] = [];
-        var article = panierListe[i];
+    for (let i = 1; i < panierListe.length; i++) {
+        let produit = panierListe[i];
         //l'id du li est "panier-liste-[vrai id de l'article]"
-        var idArticle = article.id.split('-')[2];
-        var nomArticle = article.getElementsByClassName("panier-item-nom")[0].innerHTML;
-        var quantiteArticle = parseInt(article.getElementsByClassName("panier-item-quantite")[0].innerHTML);
+        let idProduit = produit.id.split('-')[2];
+        let prixTotal = produit.getElementsByClassName("panier-item-total")[0].innerHTML;
+        let nomProduit = produit.getElementsByClassName("panier-item-nom")[0].innerHTML;
+        let quantiteProduit = parseInt(produit.getElementsByClassName("panier-item-quantite")[0].innerHTML);
 
-        //on met le tout dans une ligne du tableeau
-        panier[i - 1].idArticle = idArticle;
-        panier[i - 1].nomArticle = nomArticle;
-        panier[i - 1].quantiteArticle = quantiteArticle;
+        //on ajoute le tout dans un objet que l'on mettra dans le tableau panierAchat
+        let achatCourant = {
+            idProduit: idProduit,
+            prixTotal: prixTotal,
+            quantiteProduit: quantiteProduit,
+            nomProduit: nomProduit 
+        }
+        panierAchat[i - 1] = achatCourant;
     }
 
     /*vérification de la date valide*/
@@ -182,9 +186,10 @@ function envoyerPanier() {
         } else {
             //tout est bon maintenant, il est temps d'envoyer tout ça
             var dateFormat = panierDateInput.val();
+            console.log(JSON.stringify(panierAchat));
             //on s'occupe d'afficher le chargement 
             apparitionPopUp();
-            $.post("commande.php", { panier: panier, date: dateFormat}, function (data) {
+            $.post("commande.php", {panierJson: JSON.stringify(panierAchat), date: dateFormat}, function (data) {
                 apparitionTextePopUp(data);
 
                 //si la commande à été bien effectuée, on vide tous les champs au passage
