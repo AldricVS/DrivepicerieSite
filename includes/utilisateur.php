@@ -72,4 +72,12 @@ require_once("includes/bdd.php");
         }
     }
 
+    /**
+     * Permet d'avoir la date dans une semaine, formalisée afin d'être utilisée par l'élément input de HTML
+     * (format yyyy-mm-dd, ex : 2020-10-29)
+     */
+    function dateDansUneSemaine(){
+        return date("Y-m-d", strtotime("+7 days"));
+    }
+
 ?>

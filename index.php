@@ -54,9 +54,10 @@ unset($_POST);
     <div id="panier-liste" class="cart-relative">
         <ul class="cart-relative">
 
-            <li class="cart-relative">
+            <li class="cart-relative hidden" id="panier-liste-commande">
                 <p class="cart-relative">Prix total : <span id="panier-prix-total">0.00</span>€</p></br>
-                <button onclick="envoyerPanier();" type="button" class="cart-relative">Effectuer la commande</button>
+                <div class="cart-relative">Commander pour le <input type="date" class="cart-relative" id="panier-date-commande" value="<?=dateDansUneSemaine()?>"/></div>
+                <button onclick="envoyerPanier();" type="button" class="cart-relative" style="margin-top: 10px;">Effectuer la commande</button>
             </li>
         </ul>
 
