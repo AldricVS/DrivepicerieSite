@@ -87,5 +87,4 @@ require_once("includes/bdd.php");
     function dateDansUneSemaine(){
         return date("Y-m-d", strtotime("+7 days"));
     }
-
 ?>

@@ -21,10 +21,10 @@ unset($_POST);
 <head>
     <title>Drivepicerie - Page principale</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="style/bootstrap.min.css">
-    <link rel="stylesheet" href="style/reset.css">
-    <link rel="stylesheet" type="text/css" href="style/style.css">
-
+    <meta name="description" content="Ce site vous permet de commander vos articles afin d'aller les chercher plus tard dans votre épicerie préférée"/>
+    <link rel="stylesheet" href="style/bootstrap.min.css"/>
+    <link rel="stylesheet" href="style/reset.css"/>
+    <link rel="stylesheet" type="text/css" href="style/style.css"/>
 </head>
 
 <body>
@@ -32,7 +32,7 @@ unset($_POST);
 
         <div id="user">
             <ul>
-                <li><a id="utlisateur" href="utilisateur.php">Liste des commandes</a></li>
+                <li><a id="liste-commande-lien" href="liste-commandes.php">Liste des commandes</a></li>
                 <li><a id="utlisateur" href="deconnexion.php">Déconnexion</a></li>
             </ul>
 

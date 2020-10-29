@@ -20,5 +20,41 @@
         }else{
             return NULL;
         }
-    }    
+    }   
+    
+    function chercherCommandes($nomUtilisateur){
+        global $bdd;
+
+        //on récupère un tableau contenant les commandes
+        $result = pg_query_params($bdd,
+            "SELECT * FROM commande
+            WHERE nom_utilisateur=$1",
+            array(
+                $nomUtilisateur
+            ));
+        //si $result == false, alors il n'y a eu aucun résultat
+        if($result){
+            $tabCommandes = pg_fetch_all($result);
+            
+            
+            //pour chacune de ses commandes, on va lister dedans les produis commandés qui sont associés et on va garder une trace du prix total de la commande
+            for ($i=0; $i < count($tabCommandes); $i++) { 
+                $prixTotalCommande = 0.0;
+                $resCommandeSpecifique = pg_query($bdd,
+                    "SELECT pc.quantite_commande, pc.prix_total_commande, pr.nom_produit
+                    FROM produit_commande as pc 
+                    JOIN produit as pr ON pc.id_produit = pr.id_produit
+                    WHERE id_commande=" . $tabCommandes[$i]["id_commande"]);
+                
+                $tabCommandes[$i]["produits_commandes"] = pg_fetch_all($resCommandeSpecifique);
+                for ($j=0; $j < count($tabCommandes[$i]["produits_commandes"]); $j++) { 
+                    $prixTotalCommande += floatval($tabCommandes[$i]["produits_commandes"][$j]["prix_total_commande"]);
+                }
+                $tabCommandes[$i]["prix_total_commande"] = $prixTotalCommande;
+            }
+            return $tabCommandes;
+        }else{
+            return NULL;
+        }
+    }
 ?>

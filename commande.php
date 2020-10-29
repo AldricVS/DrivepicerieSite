@@ -74,8 +74,6 @@ if (!isset($_POST["panierJson"]) || !isset($_POST["date"]) || !isset($_SESSION["
                         $prixTotalProduit
                     )
                 );
-
-                
             }
             //si tout est réussi on va enlever cette même quantité du stock total, 
             //sous peine d'avoir des clients qui ne pourront commander quelque chose qui n'existe pas
@@ -103,8 +101,7 @@ if (!isset($_POST["panierJson"]) || !isset($_POST["date"]) || !isset($_SESSION["
         echo $erreurs;
         echo "Commande annulée.";
     }
+
+    unset($_POST["panierJson"]);
+    unset($_POST["date"]);
 }
-
-
-unset($_POST["panier"]);
-unset($_POST["date"]);
