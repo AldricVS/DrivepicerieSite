@@ -33,7 +33,10 @@
                 $nomUtilisateur
             ));
         //si $result == false, alors il n'y a eu aucun résultat
-        if($result){
+        if(pg_num_rows($result) < 1){
+            return NULL;
+        }else{
+            
             $tabCommandes = pg_fetch_all($result);
             
             
@@ -53,8 +56,6 @@
                 $tabCommandes[$i]["prix_total_commande"] = $prixTotalCommande;
             }
             return $tabCommandes;
-        }else{
-            return NULL;
         }
     }
 ?>
