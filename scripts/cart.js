@@ -149,58 +149,57 @@ function viderQuantite() {
  * Récupère les infos du panier et fait un requête ajax pour pouvoir communiquer avec la base de données.
  */
 function envoyerPanier() {
-    var panierAchat = [];
+    if (confirm("Voulez-vous vraiment passer cette commande.\nVérfiez bien la date de récupération avant de choisir.")) {
+        var panierAchat = [];
 
-    var panierListe = document.getElementById("panier-liste").children[0].children;
-    //le premier element ne compte pas, il s'agit du récapitulatif 
-    for (let i = 1; i < panierListe.length; i++) {
-        let produit = panierListe[i];
-        //l'id du li est "panier-liste-[vrai id de l'article]"
-        let idProduit = produit.id.split('-')[2];
-        let prixTotal = produit.getElementsByClassName("panier-item-total")[0].innerHTML;
-        let nomProduit = produit.getElementsByClassName("panier-item-nom")[0].innerHTML;
-        let quantiteProduit = parseInt(produit.getElementsByClassName("panier-item-quantite")[0].innerHTML);
+        var panierListe = document.getElementById("panier-liste").children[0].children;
+        //le premier element ne compte pas, il s'agit du récapitulatif 
+        for (let i = 1; i < panierListe.length; i++) {
+            let produit = panierListe[i];
+            //l'id du li est "panier-liste-[vrai id de l'article]"
+            let idProduit = produit.id.split('-')[2];
+            let prixTotal = produit.getElementsByClassName("panier-item-total")[0].innerHTML;
+            let nomProduit = produit.getElementsByClassName("panier-item-nom")[0].innerHTML;
+            let quantiteProduit = parseInt(produit.getElementsByClassName("panier-item-quantite")[0].innerHTML);
 
-        //on ajoute le tout dans un objet que l'on mettra dans le tableau panierAchat
-        let achatCourant = {
-            idProduit: idProduit,
-            prixTotal: prixTotal,
-            quantiteProduit: quantiteProduit,
-            nomProduit: nomProduit 
+            //on ajoute le tout dans un objet que l'on mettra dans le tableau panierAchat
+            let achatCourant = {
+                idProduit: idProduit,
+                prixTotal: prixTotal,
+                quantiteProduit: quantiteProduit,
+                nomProduit: nomProduit
+            }
+            panierAchat[i - 1] = achatCourant;
         }
-        panierAchat[i - 1] = achatCourant;
-    }
 
-    /*vérification de la date valide*/
+        /*vérification de la date valide*/
 
-    //on doit vérifier que la date est présente ou non
-    var panierDateInput = $("#panier-date-commande");
-    var dateCommande = new Date(panierDateInput.val());
-    if (isNaN(dateCommande.getTime())) {
-        apparitionTextePopUp("La date spécifiée n'est pas valide.");
-    } else {
-        //on compare à la date d'aujourd'hui, on veut que la date de commande soit pour le lendemain minimum
-        var dateAjd = new Date();
-        if (dateAjd > dateCommande) {
-            apparitionTextePopUp("Vous ne pouvez pas faire une commande et aller la chercher le jour même, désolé.");
+        //on doit vérifier que la date est présente ou non
+        var panierDateInput = $("#panier-date-commande");
+        var dateCommande = new Date(panierDateInput.val());
+        if (isNaN(dateCommande.getTime())) {
+            apparitionTextePopUp("La date spécifiée n'est pas valide.");
         } else {
-            //tout est bon maintenant, il est temps d'envoyer tout ça
-            var dateFormat = panierDateInput.val();
-            console.log(JSON.stringify(panierAchat));
-            //on s'occupe d'afficher le chargement 
-            apparitionPopUp();
-            $.post("commande.php", {panierJson: JSON.stringify(panierAchat), date: dateFormat}, function (data) {
-                apparitionTextePopUp(data);
+            //on compare à la date d'aujourd'hui, on veut que la date de commande soit pour le lendemain minimum
+            var dateAjd = new Date();
+            if (dateAjd > dateCommande) {
+                apparitionTextePopUp("Vous ne pouvez pas faire une commande et aller la chercher le jour même, désolé.");
+            } else {
+                //tout est bon maintenant, il est temps d'envoyer tout ça
+                var dateFormat = panierDateInput.val();
+                console.log(JSON.stringify(panierAchat));
+                //on s'occupe d'afficher le chargement 
+                apparitionPopUp();
+                $.post("commande.php", { panierJson: JSON.stringify(panierAchat), date: dateFormat }, function (data) {
+                    apparitionTextePopUp(data);
 
-                //si la commande à été bien effectuée, on vide tous les champs au passage
-                if (data == "Commande réalisée avec succès") {
-                    console.log("vider champs");
-                    viderQuantite();
-                }
-            });
+                    //si la commande à été bien effectuée, on vide tous les champs au passage
+                    if (data == "Commande réalisée avec succès") {
+                        console.log("vider champs");
+                        viderQuantite();
+                    }
+                });
+            }
         }
     }
-
-
-
 }

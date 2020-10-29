@@ -92,8 +92,20 @@ function sauvegarderFavoris(){
     var favori = [];
     var listeProduits = document.getElementById("liste-articles").children;
     for(var i = 0; i < listeProduits.length; i++){
-        var produitId = listeProduits[i].id.split('-')[2];
+        var produitId = listeProduits[i].id.split('-')[1];
+        
         var favoriCheckbox = listeProduits[i].getElementsByClassName("favori")[0];
-        favori[produitId] = favoriCheckbox.checked;
+        favori.push({
+            produitId: produitId,
+            estFavori: favoriCheckbox.checked
+        })
     }
+
+    console.log(favori);
+
+    //et on envoie à php le tout
+    apparitionPopUp();
+    $.post('enregistrer-favoris.php', {favoris: JSON.stringify(favori)}, function(data){
+        apparitionTextePopUp(data);
+    });
 }
