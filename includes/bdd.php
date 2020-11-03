@@ -16,8 +16,10 @@
         if($result){
             //on transforme la requete rcupérée en tableau utilisable
             $tabProduits = pg_fetch_all($result);
+            pg_free_result($result);
             return $tabProduits;
         }else{
+            pg_free_result($result);
             return NULL;
         }
     }   
@@ -57,5 +59,10 @@
             }
             return $tabCommandes;
         }
+    }
+
+    function fermerConnexion(){
+        global $bdd;
+        pg_close($bdd);
     }
 ?>
